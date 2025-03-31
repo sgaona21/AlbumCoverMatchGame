@@ -34,6 +34,9 @@ namespace AlbumCoverMatchGame
         public MainPage()
         {
             this.InitializeComponent();
+
+            Songs = new ObservableCollection<Song>();
+
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
