@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -27,9 +30,33 @@ namespace AlbumCoverMatchGame
             this.InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
+            // 1. Get access to Music library
+            StorageFolder folder = KnownFolders.MusicLibrary;
+            var allSongs = new ObservableCollection<StorageFile>();
+            await RetrieveFilesInFolders(allSongs, folder);
 
+            // 2. Choose random songs from library
+
+
+            // 3. Pluck off meta data from selected songs
+        }
+
+        private async Task RetrieveFilesInFolders(
+            ObservableCollection<StorageFile> list,
+            StorageFolder parent)
+        {
+            foreach (var item in await parent.GetFilesAsync())
+            {
+                if (item.FileType == ".mp3")
+                    list.Add(item);
+            }
+
+            foreach (var item in await parent.GetFoldersAsync())
+            {
+                await RetrieveFilesInFolders(list, item);
+            }
         }
     }
 }
