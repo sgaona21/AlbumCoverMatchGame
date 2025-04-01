@@ -31,6 +31,7 @@ namespace AlbumCoverMatchGame
     {
 
         private ObservableCollection<Song> Songs;
+        private ObservableCollection<StorageFile> AllSongs;
         public MainPage()
         {
             this.InitializeComponent();
@@ -39,20 +40,6 @@ namespace AlbumCoverMatchGame
 
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
-        {
-            // 1. Get access to Music library
-            StorageFolder folder = KnownFolders.MusicLibrary;
-            var allSongs = new ObservableCollection<StorageFile>();
-            await RetrieveFilesInFolders(allSongs, folder);
-
-            // 2. Choose random songs from library
-            var randomSongs = await PickRandomSongs(allSongs);
-
-            // 3. Pluck off meta data from selected songs
-            await PopulateSongList(randomSongs);
-
-        }
 
         private async Task RetrieveFilesInFolders(
             ObservableCollection<StorageFile> list,
@@ -134,6 +121,56 @@ namespace AlbumCoverMatchGame
                 id++;
             }
 
+        }
+
+        private void SongGridView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+
+        }
+
+        private void PlayAgainButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+
+
+
+        }
+
+        private async Task<ObservableCollection<StorageFile>> SetupMusicList()
+        {
+            // 1. Get access to Music library
+            StorageFolder folder = KnownFolders.MusicLibrary;
+            var allSongs = new ObservableCollection<StorageFile>();
+            await RetrieveFilesInFolders(allSongs, folder);
+            return allSongs;
+        }
+
+        private async Task PrepareNewGame()
+        {
+            Songs.Clear();
+
+            // Choose random songs from library
+            var randomSongs = await PickRandomSongs(AllSongs);
+
+            // Pluck off meta data from selected songs
+            await PopulateSongList(randomSongs);
+
+            // State management
+
+        }
+
+        private async void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            StartupProgressRing.IsActive = true;
+
+            AllSongs = await SetupMusicList();
+            await PrepareNewGame();
+
+            StartupProgressRing.IsActive = false;
         }
     }
 }
