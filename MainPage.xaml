@@ -38,8 +38,9 @@
 
         <StackPanel Grid.Row="0">
             <ProgressBar x:Name="MyProgressBar" Maximum="100" Minimum="0" Value="100" Height="20" Foreground="Blue" Margin="20,20,20,20"/>
-            <TextBlock x:Name="InstructionTextBlock" Text="" Foreground="Blue" HorizontalAlignment="Center"/>
+            <TextBlock x:Name="InstructionTextBlock" Text="" Foreground="Blue" HorizontalAlignment="Center" FontSize="32"/>
             <MediaElement x:Name="MyMediaElement" AutoPlay="True"/>
+            
         </StackPanel>
 
         <StackPanel Grid.Row="1" Orientation="Vertical" Margin="20">
@@ -54,10 +55,10 @@
                 
             </GridView>
 
-            <TextBlock x:Name="ResultTextBlock" />
-            <TextBlock x:Name="TitleTextBlock" />
-            <TextBlock x:Name="ArtistTextBlock" />
-            <TextBlock x:Name="AlbumTextBlock" />
+            <TextBlock x:Name="ResultTextBlock" FontSize="24"/>
+            <TextBlock x:Name="TitleTextBlock" FontSize="24"/>
+            <TextBlock x:Name="ArtistTextBlock" FontSize="24"/>
+            <TextBlock x:Name="AlbumTextBlock" FontSize="24"/>
             <Button x:Name="PlayAgainButton"  Content="Play Again" Background="Red" HorizontalAlignment="Center" Visibility="Collapsed" Click="PlayAgainButton_Click"/>
         </StackPanel>
 

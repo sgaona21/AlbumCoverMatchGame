@@ -8,6 +8,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Media.Core;
+using Windows.Media.Playback;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.UI;
@@ -141,12 +143,18 @@ namespace AlbumCoverMatchGame
 
             Uri uri;
             int score;
+
+            
+
             if (clickedSong.Selected)
             {
                 uri = new Uri("ms-appx:///Assets/correct.png");
                 score = (int)MyProgressBar.Value;
-                
+
                 //Positive sound logic here:
+                var correctGuess = new MediaPlayer();
+                correctGuess.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/correctGuess.wav"));
+                correctGuess.Play();
 
             }
             else
@@ -155,7 +163,9 @@ namespace AlbumCoverMatchGame
                 score = ((int)MyProgressBar.Value) * -1;
 
                 //Negative sound logic here: 
-
+                var wrongGuess = new MediaPlayer();
+                wrongGuess.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/wrongGuess.wav"));
+                wrongGuess.Play();
             }
 
             StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(uri);
