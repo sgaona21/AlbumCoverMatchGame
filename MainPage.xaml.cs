@@ -36,6 +36,7 @@ namespace AlbumCoverMatchGame
 
         bool _playingMusic = false;
         int _round = 0;
+        int _totalScore = 0;
 
         public MainPage()
         {
@@ -128,10 +129,61 @@ namespace AlbumCoverMatchGame
 
         }
 
-        private void SongGridView_ItemClick(object sender, ItemClickEventArgs e)
+        private async void SongGridView_ItemClick(object sender, ItemClickEventArgs e)
         {
+            if (!_playingMusic) return;
+
+            CountDown.Pause();
+            MyMediaElement.Stop();
+
+            var clickedSong = (Song)e.ClickedItem;
+            var correctSong = Songs.FirstOrDefault(p => p.Selected == true);
+
+            Uri uri;
+            int score;
+            if (clickedSong.Selected)
+            {
+                uri = new Uri("ms-appx:///Assets/correct.png");
+                score = (int)MyProgressBar.Value;
+                
+                //Positive sound logic here:
+
+            }
+            else
+            {
+                uri = new Uri("ms-appx:///Assets/incorrect.png");
+                score = ((int)MyProgressBar.Value) * -1;
+
+                //Negative sound logic here: 
+
+            }
+
+            StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(uri);
+            var fileStream = await file.OpenAsync(FileAccessMode.Read);
+            await clickedSong.AlbumCover.SetSourceAsync(fileStream);
+
+            _totalScore += score;
             _round++;
-            StartCooldown();
+
+            ResultTextBlock.Text = string.Format("Score: {0} Total Score after {1} Rounds: {2}", score, _round, _totalScore);
+            TitleTextBlock.Text = String.Format("Correct Song: {0}", correctSong.Title);
+            ArtistTextBlock.Text = string.Format("Performed by: {0}", correctSong.Artist);
+            AlbumTextBlock.Text = string.Format("On Album: {0}", correctSong.Album);
+
+            clickedSong.Used = true;
+
+            correctSong.Selected = false;
+            correctSong.Used = true;
+
+            if (_round >= 5)
+            {
+                InstructionTextBlock.Text = string.Format("Game over ... You scored: {0}", _totalScore);
+                PlayAgainButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                StartCooldown();
+            }
         }
 
         private void PlayAgainButton_Click(object sender, RoutedEventArgs e)
