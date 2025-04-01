@@ -72,7 +72,7 @@ namespace AlbumCoverMatchGame
 
             var randomSongs = new List<StorageFile>();
 
-            while (randomSongs.Count < 10)
+            while (randomSongs.Count < 11)
             {
                 var randomNumber = random.Next(songCount);
                 var randomSong = allSongs[randomNumber];

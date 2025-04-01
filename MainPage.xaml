@@ -26,6 +26,7 @@
                 <DiscreteDoubleKeyFrame KeyTime="0:0:8" Value="30" />
                 <DiscreteDoubleKeyFrame KeyTime="0:0:9" Value="20" />
                 <DiscreteDoubleKeyFrame KeyTime="0:0:10" Value="10" />
+
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
     </Page.Resources>
