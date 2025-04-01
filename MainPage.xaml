@@ -22,7 +22,7 @@
             <MediaElement x:Name="MyMediaOutlet" AutoPlay="True"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Orientation="Vertical">
+        <StackPanel Grid.Row="1" Orientation="Vertical" Margin="20">
             <GridView x:Name="SongGridView" ItemsSource="{x:Bind Songs}" IsItemClickEnabled="True" ItemClick="SongGridView_ItemClick">
                 <GridView.ItemTemplate>
                     <DataTemplate x:DataType="data:Song">
