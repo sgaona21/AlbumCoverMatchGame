@@ -10,6 +10,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -32,6 +33,10 @@ namespace AlbumCoverMatchGame
 
         private ObservableCollection<Song> Songs;
         private ObservableCollection<StorageFile> AllSongs;
+
+        bool _playingMusic = false;
+        int _round = 0;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -125,7 +130,8 @@ namespace AlbumCoverMatchGame
 
         private void SongGridView_ItemClick(object sender, ItemClickEventArgs e)
         {
-
+            _round++;
+            StartCooldown();
         }
 
         private void PlayAgainButton_Click(object sender, RoutedEventArgs e)
@@ -171,6 +177,54 @@ namespace AlbumCoverMatchGame
             await PrepareNewGame();
 
             StartupProgressRing.IsActive = false;
+
+            StartCooldown();
+        }
+
+        private void StartCooldown()
+        {
+            _playingMusic = false;
+            SolidColorBrush brush = new SolidColorBrush(Colors.Blue);
+            MyProgressBar.Foreground = brush;
+            InstructionTextBlock.Text = string.Format("Get ready for round {0} ...", _round + 1);
+            InstructionTextBlock.Foreground = brush;
+            CountDown.Begin();
+        }
+
+        private void StartCountdown()
+        {
+            _playingMusic = true;
+            SolidColorBrush brush = new SolidColorBrush(Colors.Red);
+            MyProgressBar.Foreground = brush;
+            InstructionTextBlock.Text = "GO!";
+            InstructionTextBlock.Foreground = brush;
+            CountDown.Begin();
+        }
+
+        private async void CountDown_Completed(object sender, object e)
+        {
+            if (!_playingMusic)
+            {
+                // Start playing music
+                var song = PickSong();
+
+                MyMediaElement.SetSource(
+                    await song.SongFile.OpenAsync(FileAccessMode.Read),
+                    song.SongFile.ContentType);
+
+                // Start countdown
+                StartCountdown();
+            }
+        }
+
+        private Song PickSong()
+        {
+            Random random = new Random();
+            var unusedSongs = Songs.Where(p => p.Used == false);
+            var randomNumber = random.Next(unusedSongs.Count());
+            var randomSong = unusedSongs.ElementAt(randomNumber);
+            randomSong.Selected = true;
+            return randomSong;
         }
     }
 }
