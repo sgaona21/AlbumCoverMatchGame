@@ -186,8 +186,11 @@ namespace AlbumCoverMatchGame
             }
         }
 
-        private void PlayAgainButton_Click(object sender, RoutedEventArgs e)
+        private async void PlayAgainButton_Click(object sender, RoutedEventArgs e)
         {
+            await PrepareNewGame();
+
+            PlayAgainButton.Visibility = Visibility.Collapsed;
 
         }
 
@@ -211,14 +214,20 @@ namespace AlbumCoverMatchGame
         {
             Songs.Clear();
 
-            // Choose random songs from library
             var randomSongs = await PickRandomSongs(AllSongs);
 
-            // Pluck off meta data from selected songs
             await PopulateSongList(randomSongs);
 
-            // State management
+            StartCooldown();
 
+            InstructionTextBlock.Text = "Get ready ...";
+            ResultTextBlock.Text = "";
+            TitleTextBlock.Text = "";
+            ArtistTextBlock.Text = "";
+            AlbumTextBlock.Text = "";
+
+            _totalScore = 0;
+            _round = 0;
         }
 
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
